@@ -47,6 +47,8 @@ class Hand(Enum):
         return:
             Optional[Hand]: 勝利した手。引き分けの場合は None を返す
         """
+        if not isinstance(hands, Set):
+            raise TypeError("handsはSet型を渡してください。")
         all_hands_used = 3
         one_hand_used = 1
         if len(hands) == one_hand_used or len(hands) == all_hands_used:
@@ -58,4 +60,4 @@ class Hand(Enum):
         elif hands == {Hand.SCISSORS, Hand.PAPER}:
             return Hand.SCISSORS
         else:
-            raise ValueError(f"hands = {', '.join(hands)}は想定されていません。")
+            raise ValueError("渡されたhandsの内容はは想定されていません。")

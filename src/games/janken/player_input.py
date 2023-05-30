@@ -43,6 +43,8 @@ class PlayerInput():
         Raises:
             ValueError: 手の値が不正な場合。
         """
+        if not isinstance(hand, str):
+            raise TypeError("hand はstr型を渡してください")
         if not (hand in ["r", "s", "p"]):
             raise ValueError("手はr, s, pのいずれかを入力してください")
 
@@ -55,6 +57,8 @@ class PlayerInput():
         Raises:
             ValueError: プレイヤー数の値が不正な場合。
         """
+        if not isinstance(player_num_str, str):
+            raise TypeError("player_num_str はstr型を渡してください")
         min_players = 2
         max_players = 10
         try:

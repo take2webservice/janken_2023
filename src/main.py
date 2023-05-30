@@ -4,7 +4,7 @@
 """
 import sys
 from games import IGame
-from game_factory import GameFactory
+from games.game_factory import GameFactory
 
 if __name__ == '__main__':
     try:

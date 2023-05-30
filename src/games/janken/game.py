@@ -2,11 +2,11 @@
 このモジュールでは、ジャンケンゲームの核となる機能を提供します。Gameクラスはゲームの進行を管理し、
 手の勝敗を判断します。
 """
-from typing import List, Set, Optional
+from typing import List, Set, Optional, Callable
 
 from ..igame import IGame
 from .player_input import PlayerInput
-from .hand import Hand, HandFactory
+from .hand import Hand
 from .game_result import GameResult
 
 class Game(IGame):
@@ -15,7 +15,7 @@ class Game(IGame):
     """
     __slots__ = ['player_input', 'player_hand', 'enemy_hands', 'result']
 
-    def __init__(self, player_input: PlayerInput, enemy_hands: List[Hand]) -> None:
+    def __init__(self, player_input: PlayerInput, create_enemy_hands:Callable[[PlayerInput], List[Hand]]) -> None:
         """
         Gameクラスのインスタンスを初期化します。
 
@@ -23,11 +23,8 @@ class Game(IGame):
             param player_input (PlayerInput): プレイヤーからの入力情報
             param enemy_hands (List[Hand]): 敵の手のリスト
         """
-        if enemy_hands and len(enemy_hands) != player_input.player_num -1:
-            raise ValueError(f"enemy_handsの長さは{player_input.player_num -1}にしてください")
-        self.player_input: PlayerInput = player_input
-        self.player_hand: Hand = HandFactory.create_hand_from_player_input(player_input)
-        self.enemy_hands: List[Hand] = enemy_hands
+        self.player_hand: Hand = Hand(player_input.hand)
+        self.enemy_hands: List[Hand] = create_enemy_hands(player_input)
         self.result: Optional[GameResult] = None
 
     def play(self) -> GameResult:
@@ -46,6 +43,8 @@ class Game(IGame):
         """
         ゲームの結果を出力する
         """
+        if self.result is None:
+            raise RuntimeError("playを先に実行してください")
         result_message: str = self.result.create_result_message()
         player_hand_message: str = self.create_player_hand_message()
         enemy_hands_message: str = self.create_enemy_hands_message()
